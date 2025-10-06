@@ -8,6 +8,8 @@ import {
   type GridItem,
 } from '@/models/desktop.model';
 
+import desktopImg from '@/assets/desktop-bg.png';
+
 const items = ref<GridItem[]>([
   {
     id: 'folder-1',
@@ -72,6 +74,15 @@ const gridStyle = computed(() => {
   } as Record<string, string>;
 });
 
+// Background image: fit height, crop sides, centered
+const desktopBgStyle = computed(() => ({
+  backgroundImage: `url(${desktopImg})`,
+  backgroundRepeat: 'no-repeat',
+  backgroundPosition: 'center center',
+  backgroundSize: 'auto 100%', // height = 100vh, width scales; sides crop if wider
+  backgroundColor: '#1f2937', // fallback dark gray behind image
+}));
+
 function cellStyleFor(item: GridItem) {
   const itemPosition = item.positions[currentBP.value];
   return {
@@ -82,7 +93,7 @@ function cellStyleFor(item: GridItem) {
 </script>
 
 <template>
-  <div class="desktop-root">
+  <div class="desktop-root" :style="desktopBgStyle">
     <div class="desktop-grid" :style="gridStyle">
       <FileItem
         v-for="item in items"
@@ -100,7 +111,7 @@ function cellStyleFor(item: GridItem) {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background: #1f2937;
+  /* background is now applied inline via :style to support imported image */
   color: #e5e7eb;
   position: relative;
 }
@@ -108,6 +119,7 @@ function cellStyleFor(item: GridItem) {
 .desktop-grid {
   position: absolute;
   inset: 0 0 var(--taskbar-height, 28px) 0;
+  /* grid lines sit ON TOP of the background image layers from .desktop-root */
   background-image: linear-gradient(
       to right,
       rgba(255, 255, 255, 0.08) 1px,
