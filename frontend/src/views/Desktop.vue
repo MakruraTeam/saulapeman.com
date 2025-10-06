@@ -45,6 +45,17 @@ const items = ref<GridItem[]>([
       xl: { row: 4, col: 10 },
     },
   },
+  {
+    id: 'test-2',
+    label: 'A file with a very long name.txt',
+    iconClass: 'bi bi-file-text',
+    positions: {
+      sm: { row: 5, col: 1 },
+      md: { row: 5, col: 6 },
+      lg: { row: 5, col: 8 },
+      xl: { row: 5, col: 10 },
+    },
+  },
 ]);
 
 const currentBP = ref<BP>('lg');
