@@ -1,6 +1,8 @@
 export type BP = 'sm' | 'md' | 'lg' | 'xl';
 export type BreakpointsWidths = Record<BP, number>;
 
+export type BgMode = 'fitHeight' | 'fitWidth';
+
 export const BP_WIDTHS: BreakpointsWidths = {
   sm: 0,
   md: 768,

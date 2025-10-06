@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import FileItem from '@/components/File.vue';
 import {
+  BgMode,
   BP,
   BP_WIDTHS,
   GRID_DEFAULT,
@@ -55,11 +56,48 @@ const computeBP = () => {
   else currentBP.value = 'sm';
 };
 
+const bgMode = ref<BgMode>('fitHeight');
+const imgNaturalW = ref<number | null>(null);
+const imgNaturalH = ref<number | null>(null);
+
+function computeBgMode() {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  if (!imgNaturalW.value || !imgNaturalH.value) {
+    bgMode.value = 'fitHeight';
+    return;
+  }
+  const aspect = imgNaturalW.value / imgNaturalH.value;
+  const widthIfFitHeight = aspect * vh;
+  bgMode.value = vw > widthIfFitHeight ? 'fitWidth' : 'fitHeight';
+}
+
+function preloadDesktopImage() {
+  const img = new Image();
+  img.src = desktopImg;
+  if (img.complete && img.naturalWidth && img.naturalHeight) {
+    imgNaturalW.value = img.naturalWidth;
+    imgNaturalH.value = img.naturalHeight;
+    computeBgMode();
+  } else {
+    img.onload = () => {
+      imgNaturalW.value = img.naturalWidth;
+      imgNaturalH.value = img.naturalHeight;
+      computeBgMode();
+    };
+  }
+}
+
 onMounted(() => {
   computeBP();
+  preloadDesktopImage();
   window.addEventListener('resize', computeBP, { passive: true });
+  window.addEventListener('resize', computeBgMode, { passive: true });
 });
-onBeforeUnmount(() => window.removeEventListener('resize', computeBP));
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', computeBP);
+  window.removeEventListener('resize', computeBgMode);
+});
 
 const gridStyle = computed(() => {
   const { cols, rows } = GRID_DEFAULT[currentBP.value];
@@ -74,14 +112,16 @@ const gridStyle = computed(() => {
   } as Record<string, string>;
 });
 
-// Background image: fit height, crop sides, centered
-const desktopBgStyle = computed(() => ({
-  backgroundImage: `url(${desktopImg})`,
-  backgroundRepeat: 'no-repeat',
-  backgroundPosition: 'center center',
-  backgroundSize: 'auto 100%', // height = 100vh, width scales; sides crop if wider
-  backgroundColor: '#1f2937', // fallback dark gray behind image
-}));
+const desktopBgStyle = computed(() => {
+  const size = bgMode.value === 'fitHeight' ? 'auto 100%' : '100% auto';
+  return {
+    backgroundImage: `url(${desktopImg})`,
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center center',
+    backgroundSize: size,
+    backgroundColor: '#1f2937',
+  } as Record<string, string>;
+});
 
 function cellStyleFor(item: GridItem) {
   const itemPosition = item.positions[currentBP.value];
@@ -108,18 +148,17 @@ function cellStyleFor(item: GridItem) {
 
 <style scoped>
 .desktop-root {
+  position: fixed;
+  inset: 0;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  /* background is now applied inline via :style to support imported image */
   color: #e5e7eb;
-  position: relative;
 }
 
 .desktop-grid {
   position: absolute;
   inset: 0 0 var(--taskbar-height, 28px) 0;
-  /* grid lines sit ON TOP of the background image layers from .desktop-root */
   background-image: linear-gradient(
       to right,
       rgba(255, 255, 255, 0.08) 1px,
