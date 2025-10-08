@@ -30,6 +30,8 @@ Add your .env file in the backend folder with the following variables:
 - DB_HOST
 - JWT_SECRET
 - PORT
+- ADMIN_PANEL_LOGIN - default username to using admin panel
+- ADMIN_PANEL_PASSWORD - default password to using admin panel
 
 ```bash
 cd backend
