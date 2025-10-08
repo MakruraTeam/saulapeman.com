@@ -19,8 +19,7 @@ export const loginController = async (req, res) => {
       return res.status(401).json({ error: 'Invalid username or password' });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: rememberMe ? '30d' : '2h' });
-
+    const token = jwt.sign({ id: user._id, tokenHash: user.tokenHash }, process.env.JWT_SECRET, { expiresIn: rememberMe ? '30d' : '2h' });
     res.status(200).json({ token });
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
