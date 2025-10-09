@@ -1,16 +1,39 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import { login } from '@/services/auth/auth.service';
+import { useAuthStore } from '@/stores/auth';
 
-const login = ref('');
+const username = ref('');
 const password = ref('');
 const rememberMe = ref(false);
+const loading = ref(false);
+const errorMsg = ref<string | null>(null);
 
-function onSubmit() {
-  console.log('Login attempt:', {
-    login: login.value,
-    password: password.value,
-    rememberMe: rememberMe.value,
-  });
+const router = useRouter();
+const route = useRoute();
+const auth = useAuthStore();
+
+async function onSubmit() {
+  errorMsg.value = null;
+  loading.value = true;
+  try {
+    await login({
+      username: username.value,
+      password: password.value,
+      rememberMe: rememberMe.value,
+    });
+
+    if (auth.getToken) {
+      const redirect =
+        (route.query.redirect as string) || '/admin-panel/desktop';
+      router.push(redirect);
+    }
+  } catch (err: any) {
+    errorMsg.value = err?.message || 'Login failed';
+  } finally {
+    loading.value = false;
+  }
 }
 </script>
 
@@ -28,15 +51,15 @@ function onSubmit() {
               <form @submit.prevent="onSubmit">
                 <div class="form-floating mb-3">
                   <input
-                    v-model="login"
+                    v-model="username"
                     type="text"
                     class="form-control"
-                    id="loginInput"
+                    id="usernameInput"
                     placeholder="admin"
                     required
                     autocomplete="username"
                   />
-                  <label for="loginInput">Login</label>
+                  <label for="usernameInput">Login</label>
                 </div>
 
                 <div class="form-floating mb-4">
@@ -64,9 +87,22 @@ function onSubmit() {
                   </label>
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100">
+                <button
+                  type="submit"
+                  class="btn btn-primary w-100"
+                  :disabled="loading"
+                >
+                  <span
+                    v-if="loading"
+                    class="spinner-border spinner-border-sm me-2"
+                    role="status"
+                  />
                   Sign In
                 </button>
+
+                <p v-if="errorMsg" class="text-danger text-center mt-3 mb-0">
+                  {{ errorMsg }}
+                </p>
               </form>
             </div>
           </div>
