@@ -13,7 +13,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/auth', authRouter);
+app.use('/api/auth', authRouter);
 
 app.listen(process.env.PORT, async () => {
   await connectToDatabase();
