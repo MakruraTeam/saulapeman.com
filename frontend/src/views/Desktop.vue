@@ -165,6 +165,12 @@ function cellStyleFor(item: GridItem) {
   height: 100vh;
   overflow: hidden;
   color: #e5e7eb;
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.desktop-root::-webkit-scrollbar {
+  display: none;
 }
 
 .desktop-grid {
