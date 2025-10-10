@@ -3,6 +3,8 @@ import DesktopView from '@/views/Desktop.vue';
 import LoginView from '@/views/cms/Login.vue';
 import CmsDesktop from '@/views/cms/CmsDesktop.vue';
 import { useAuthStore } from '@/stores/auth';
+import AddUser from '@/views/cms/AddUser.vue';
+import AdminPanelLayout from '@/layouts/AdminPanelLayout.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -16,10 +18,13 @@ const routes: Array<RouteRecordRaw> = [
     component: LoginView,
   },
   {
-    path: '/admin-panel/desktop',
-    name: 'admin-desktop',
-    component: CmsDesktop,
+    path: '/admin-panel',
+    component: AdminPanelLayout,
     meta: { requiresAuth: true },
+    children: [
+      { path: 'desktop', name: 'admin-desktop', component: CmsDesktop },
+      { path: 'add-user', name: 'add-user', component: AddUser },
+    ],
   },
 ];
 
