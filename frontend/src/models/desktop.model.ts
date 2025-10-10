@@ -10,7 +10,7 @@ export const BP_WIDTHS: BreakpointsWidths = {
   xl: 1200,
 };
 
-export type ItemPos = { row: number; col: number; h?: number };
+export type ItemPos = { row: number; col: number; };
 export type GridItem = {
   id: string;
   label: string;
