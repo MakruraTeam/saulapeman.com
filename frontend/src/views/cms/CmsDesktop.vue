@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
-import Navbar from '@/components/Navbar.vue';
 import { CmsDashboardNavItem } from '@/models/cms.dashboard.model';
 
 const router = useRouter();
@@ -39,44 +38,41 @@ const goTo = (name: string) => {
 </script>
 
 <template>
-  <div>
-    <Navbar />
-    <div class="container py-4 text-center">
-      <h2 class="mb-4">CMS</h2>
-      <div class="row g-3 justify-content-center">
-        <div
-          class="col-6 col-md-4 col-lg-3"
-          v-for="item in addItems"
-          :key="item.label"
+  <div class="container py-4 text-center">
+    <h2 class="mb-4">CMS</h2>
+    <div class="row g-3 justify-content-center">
+      <div
+        class="col-6 col-md-4 col-lg-3"
+        v-for="item in addItems"
+        :key="item.label"
+      >
+        <button
+          class="tile w-100 square-tile d-flex flex-column align-items-center justify-content-center"
+          @click="goTo(item.route)"
+          type="button"
         >
-          <button
-            class="tile w-100 square-tile d-flex flex-column align-items-center justify-content-center"
-            @click="goTo(item.route)"
-            type="button"
-          >
-            <i :class="['bi', item.icon, 'tile-icon']"></i>
-            <span class="tile-label">{{ item.label }}</span>
-          </button>
-        </div>
+          <i :class="['bi', item.icon, 'tile-icon']"></i>
+          <span class="tile-label">{{ item.label }}</span>
+        </button>
       </div>
+    </div>
 
-      <hr class="my-4" />
+    <hr class="my-4" />
 
-      <div class="row g-3 justify-content-center">
-        <div
-          class="col-6 col-md-4 col-lg-3"
-          v-for="item in viewItems"
-          :key="item.label"
+    <div class="row g-3 justify-content-center">
+      <div
+        class="col-6 col-md-4 col-lg-3"
+        v-for="item in viewItems"
+        :key="item.label"
+      >
+        <button
+          class="tile w-100 square-tile d-flex flex-column align-items-center justify-content-center"
+          @click="goTo(item.route)"
+          type="button"
         >
-          <button
-            class="tile w-100 square-tile d-flex flex-column align-items-center justify-content-center"
-            @click="goTo(item.route)"
-            type="button"
-          >
-            <i :class="['bi', item.icon, 'tile-icon']"></i>
-            <span class="tile-label">{{ item.label }}</span>
-          </button>
-        </div>
+          <i :class="['bi', item.icon, 'tile-icon']"></i>
+          <span class="tile-label">{{ item.label }}</span>
+        </button>
       </div>
     </div>
   </div>
