@@ -138,7 +138,7 @@ function cellStyleFor(item: GridItem) {
   const itemPosition = item.positions[currentBP.value];
   return {
     gridColumn: `${itemPosition.col} / span 1`,
-    gridRow: `${itemPosition.row} / span ${itemPosition.h ?? 1}`,
+    gridRow: `${itemPosition.row} / span ${itemPosition ?? 1}`,
   } as Record<string, string>;
 }
 </script>
